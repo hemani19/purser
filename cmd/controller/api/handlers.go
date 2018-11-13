@@ -36,7 +36,7 @@ func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	logrus.Debugf("Query params: (%v)", queryParams)
 	if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "false" {
-		jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
+		jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedFalse()
 		if err != nil {
 			logrus.Errorf("Unable to get response: (%v)", err)
 		}
@@ -45,7 +45,7 @@ func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
 			logrus.Errorf("Unable to encode to json: (%v)", err)
 		}
 	} else {
-		jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedFalse()
+		jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
 		if err != nil {
 			logrus.Errorf("Unable to get response: (%v)", err)
 		}
@@ -72,7 +72,7 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "false" {
-			jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
+			jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedFalse()
 			if err != nil {
 				logrus.Errorf("Unable to get response: (%v)", err)
 			}
@@ -81,7 +81,7 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 				logrus.Errorf("Unable to encode to json: (%v)", err)
 			}
 		} else {
-			jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedFalse()
+			jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
 			if err != nil {
 				logrus.Errorf("Unable to get response: (%v)", err)
 			}
