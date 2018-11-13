@@ -96,6 +96,7 @@ func CreateSchema() error {
 		isContainer: bool .
 		isProc: bool .
 		namespace: uid @reverse .
+		pod: uid @reverse .
 	`
 	ctx := context.Background()
 	err := client.Alter(ctx, op)
@@ -142,6 +143,17 @@ func ExecuteQuery(query string, root interface{}) error {
 	}
 
 	return nil
+}
+
+// ExecuteQueryRaw given a query and it fetches and writes result into interface
+func ExecuteQueryRaw(query string) ([]byte, error) {
+	ctx := context.Background()
+
+	resp, err := client.NewTxn().Query(ctx, query)
+	if err != nil {
+		log.Error(err)
+	}
+	return resp.Json, err
 }
 
 // MutateNode mutates a Dgraph transaction

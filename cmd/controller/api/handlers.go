@@ -18,7 +18,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -36,12 +35,12 @@ func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
 	addHeaders(w, r)
 	queryParams := r.URL.Query()
 	logrus.Debugf("Query params: (%v)", queryParams)
-	if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "true" {
+	if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "false" {
 		jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
 		if err != nil {
 			logrus.Errorf("Unable to get response: (%v)", err)
 		}
-		err = json.NewEncoder(w).Encode(jsonResp)
+		_, err = w.Write(jsonResp)
 		if err != nil {
 			logrus.Errorf("Unable to encode to json: (%v)", err)
 		}
@@ -50,7 +49,7 @@ func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			logrus.Errorf("Unable to get response: (%v)", err)
 		}
-		err = json.NewEncoder(w).Encode(jsonResp)
+		_, err = w.Write(jsonResp)
 		if err != nil {
 			logrus.Errorf("Unable to encode to json: (%v)", err)
 		}
@@ -67,17 +66,17 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			logrus.Errorf("Unable to get response: (%v)", err)
 		}
-		err = json.NewEncoder(w).Encode(jsonResp)
+		_, err = w.Write(jsonResp)
 		if err != nil {
 			logrus.Errorf("Unable to encode to json: (%v)", err)
 		}
 	} else {
-		if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "true" {
+		if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "false" {
 			jsonResp, err := models.RetrievePodsInteractionsForAllPodsOrphanedTrue()
 			if err != nil {
 				logrus.Errorf("Unable to get response: (%v)", err)
 			}
-			err = json.NewEncoder(w).Encode(jsonResp)
+			_, err = w.Write(jsonResp)
 			if err != nil {
 				logrus.Errorf("Unable to encode to json: (%v)", err)
 			}
@@ -86,7 +85,7 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				logrus.Errorf("Unable to get response: (%v)", err)
 			}
-			err = json.NewEncoder(w).Encode(jsonResp)
+			_, err = w.Write(jsonResp)
 			if err != nil {
 				logrus.Errorf("Unable to encode to json: (%v)", err)
 			}
