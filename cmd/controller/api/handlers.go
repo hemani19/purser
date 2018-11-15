@@ -94,11 +94,7 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 }
 
 func addHeaders(w http.ResponseWriter, r *http.Request) {
-	if origin := r.Header.Get("Origin"); origin != "" {
-		w.Header().Set("Access-Control-Allow-Origin", origin)
-	} else {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.WriteHeader(http.StatusOK)
