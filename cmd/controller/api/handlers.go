@@ -32,7 +32,7 @@ func GetHomePage(w http.ResponseWriter, r *http.Request) {
 
 // GetInventoryPods gives all the pods stored in dgraph
 func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
-	addHeaders(w, r)
+	addHeaders(&w, r)
 	queryParams := r.URL.Query()
 	logrus.Debugf("Query params: (%v)", queryParams)
 	if orphanVal, isOrphan := queryParams["orphan"]; isOrphan && orphanVal[0] == "false" {
@@ -58,7 +58,7 @@ func GetInventoryPods(w http.ResponseWriter, r *http.Request) {
 
 // GetPodInteractions listens on /interactions/pod endpoint and returns pod interactions
 func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
-	addHeaders(w, r)
+	addHeaders(&w, r)
 	queryParams := r.URL.Query()
 	logrus.Debugf("Query params: (%v)", queryParams)
 	if name, isName := queryParams["name"]; isName {
@@ -93,9 +93,9 @@ func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addHeaders(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.WriteHeader(http.StatusOK)
+func addHeaders(w *http.ResponseWriter, r *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
+	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
+	(*w).WriteHeader(http.StatusOK)
 }
