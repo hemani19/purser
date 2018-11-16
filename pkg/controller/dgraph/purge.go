@@ -27,6 +27,33 @@ type resource struct {
 	ID
 }
 
+// RemoveDeadResources removes all resources that have deleted timestamps
+func RemoveDeadResources() {
+	q := `query {
+		resources(func: has(endTime)) {
+			uid
+		}
+	}`
+	type root struct {
+		Resources []resource `json:"resources"`
+	}
+	newRoot := root{}
+	err := ExecuteQuery(q, &newRoot)
+	if err != nil {
+		log.Errorf("error while getting dead resources: (%v)", err)
+		return
+	}
+	if len(newRoot.Resources) == 0 {
+		log.Info("there are no dead resources to delete")
+	}
+	_, err = MutateNode(newRoot.Resources, DELETE)
+	if err != nil {
+		log.Errorf("error while deleting dead resources: ($v)", err)
+	} else {
+		log.Infof("deleted dead resources count: (%d)", len(newRoot.Resources))
+	}
+}
+
 // RemoveResourcesInactiveInCurrentMonth deletes all resources which have their deletion time stamp before
 // the start of current month.
 func RemoveResourcesInactiveInCurrentMonth() {

@@ -19,6 +19,7 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"time"
 
 	"github.com/robfig/cron"
 	"github.com/vmware/purser/cmd/controller/api"
@@ -45,19 +46,18 @@ func main() {
 }
 
 func startCronJobs() {
+	time.Sleep(time.Minute * 10)
+	runDiscovery()
 	c := cron.New()
 	err := c.AddFunc("@every 0h40m", runDiscovery)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.AddFunc("@daily", dgraph.RemoveResourcesInactiveInCurrentMonth)
-	if err != nil {
-		log.Error(err)
-	}
 	c.Start()
 }
 
 func runDiscovery() {
+	dgraph.RemoveDeadResources()
 	processor.ProcessPodInteractions(conf)
-	processor.ProcessServiceInteractions(conf)
+	//processor.ProcessServiceInteractions(conf)
 }
