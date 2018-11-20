@@ -19,7 +19,6 @@ package processor
 
 import (
 	"sync"
-	"time"
 
 	"github.com/vmware/purser/pkg/controller"
 
@@ -48,29 +47,42 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 	podsCount := len(pods.Items)
 	log.Infof("Processing total of (%d) Pods.", podsCount)
 
-	//freeThreads := 10
-	//if podsCount < 10 {
-	//	freeThreads = podsCount
-	//}
-	ch := make(chan int, 5)
-	defer close(ch)
+	maxGoRoutines := 10
+	if podsCount < 10 {
+		maxGoRoutines = podsCount
+	}
 
+	freeThreads := maxGoRoutines
+	numChannelsRecieved := 0
+	doneCount := 0
+	ch := make(chan int, 1)
+	wg.Add(podsCount)
 	for index, pod := range pods.Items {
-		log.Infof("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
-
-		wg.Add(1)
+		log.Debugf("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
+		if freeThreads < 1 {  
+			numChannelsRecieved++
+			<- ch
+		}
+		
+		freeThreads--
 		go func(pod corev1.Pod, index int) {
-			defer wg.Done()
-
 			containers := pod.Spec.Containers
 			interactions := processContainerDetails(conf, pod, containers)
 			linker.UpdatePodToPodTable(interactions.PodInteractions)
 			//linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
 			//	pod.GetCreationTimestamp().Time)
-			log.Infof("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
+			doneCount++
+			if doneCount % 10 == 1 {
+				log.Infof("Finished processing (%d/%d) pods", doneCount podsCount)
+			log.Debugf("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
+			freeThreads++
 			ch <- 1
+			wg.Done()
 		}(pod, index)
+	}
+	for i := 0; i < podsCount - numChannelsRecieved; i++ {
 		<- ch
 	}
 	wg.Wait()
+	close(ch)
 }
