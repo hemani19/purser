@@ -19,6 +19,7 @@ package processor
 
 import (
 	"sync"
+	"time"
 
 	"github.com/vmware/purser/pkg/controller"
 
@@ -47,26 +48,29 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 	podsCount := len(pods.Items)
 	log.Infof("Processing total of (%d) Pods.", podsCount)
 
-	maxParallelGoRoutinesCount := 10
-	if podsCount < 10 {
-		maxParallelGoRoutinesCount = podsCount
-	}
-	wg.Add(maxParallelGoRoutinesCount)
-	{
-		for index, pod := range pods.Items {
-			log.Debugf("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
+	//freeThreads := 10
+	//if podsCount < 10 {
+	//	freeThreads = podsCount
+	//}
+	ch := make(chan int, 5)
+	defer close(ch)
 
-			go func(pod corev1.Pod, index int) {
-				defer wg.Done()
+	for index, pod := range pods.Items {
+		log.Infof("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
 
-				containers := pod.Spec.Containers
-				interactions := processContainerDetails(conf, pod, containers)
-				linker.UpdatePodToPodTable(interactions.PodInteractions)
-				//linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
-				//	pod.GetCreationTimestamp().Time)
-				log.Debugf("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
-			}(pod, index)
-		}
+		wg.Add(1)
+		go func(pod corev1.Pod, index int) {
+			defer wg.Done()
+
+			containers := pod.Spec.Containers
+			interactions := processContainerDetails(conf, pod, containers)
+			linker.UpdatePodToPodTable(interactions.PodInteractions)
+			//linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
+			//	pod.GetCreationTimestamp().Time)
+			log.Infof("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
+			ch <- 1
+		}(pod, index)
+		<- ch
 	}
 	wg.Wait()
 }
