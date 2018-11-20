@@ -72,22 +72,22 @@ type Metrics struct {
 // newPod creates a new node for the pod in the Dgraph
 func newPod(k8sPod api_v1.Pod) (*api.Assigned, error) {
 	pod := Pod{
-		Name:      "pod-" + k8sPod.Name,
+		Name:      k8sPod.Name,
 		IsPod:     true,
 		Type:      "pod",
 		ID:        dgraph.ID{Xid: k8sPod.Namespace + ":" + k8sPod.Name},
 		StartTime: k8sPod.GetCreationTimestamp().Time.Format(time.RFC3339),
 	}
-	nodeUID, err := createOrGetNodeByID(k8sPod.Spec.NodeName)
-	if err == nil {
-		pod.Node = &Node{ID: dgraph.ID{UID: nodeUID, Xid: k8sPod.Spec.NodeName}}
-	}
-	namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
-	if namespaceUID != "" {
-		pod.Namespace = &Namespace{ID: dgraph.ID{UID: namespaceUID, Xid: k8sPod.Namespace}}
-	}
-	pod.Pvcs, pod.StorageRequest = getPodVolumes(k8sPod)
-	setPodOwners(&pod, k8sPod)
+	//nodeUID, err := createOrGetNodeByID(k8sPod.Spec.NodeName)
+	//if err == nil {
+	//	pod.Node = &Node{ID: dgraph.ID{UID: nodeUID, Xid: k8sPod.Spec.NodeName}}
+	//}
+	//namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
+	//if namespaceUID != "" {
+	//	pod.Namespace = &Namespace{ID: dgraph.ID{UID: namespaceUID, Xid: k8sPod.Namespace}}
+	//}
+	//pod.Pvcs, pod.StorageRequest = getPodVolumes(k8sPod)
+	//setPodOwners(&pod, k8sPod)
 	return dgraph.MutateNode(pod, dgraph.CREATE)
 }
 
@@ -113,18 +113,18 @@ func StorePod(k8sPod api_v1.Pod) error {
 			ID:      dgraph.ID{Xid: xid, UID: uid},
 			EndTime: podDeletedTimestamp.Time.Format(time.RFC3339),
 		}
-		deleteContainersInTerminatedPod(pod.Containers, podDeletedTimestamp.Time)
+		//deleteContainersInTerminatedPod(pod.Containers, podDeletedTimestamp.Time)
 	} else {
-		namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
-		containers, metrics := StoreAndRetrieveContainersAndMetrics(k8sPod, uid, namespaceUID)
-		pod = Pod{
-			ID:            dgraph.ID{Xid: xid, UID: uid},
-			Containers:    containers,
-			CPURequest:    metrics.CPURequest,
-			CPULimit:      metrics.CPULimit,
-			MemoryRequest: metrics.MemoryRequest,
-			MemoryLimit:   metrics.MemoryLimit,
-		}
+		//namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
+		//containers, metrics := StoreAndRetrieveContainersAndMetrics(k8sPod, uid, namespaceUID)
+		//pod = Pod{
+		//	ID:            dgraph.ID{Xid: xid, UID: uid},
+		//	Containers:    containers,
+		//	CPURequest:    metrics.CPURequest,
+		//	CPULimit:      metrics.CPULimit,
+		//	MemoryRequest: metrics.MemoryRequest,
+		//	MemoryLimit:   metrics.MemoryLimit,
+		//}
 	}
 
 	_, err := dgraph.MutateNode(pod, dgraph.UPDATE)

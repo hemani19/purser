@@ -47,16 +47,16 @@ func Setup(conf *controller.Config) {
 	conf.Kubeclient = utils.GetKubeclient(conf.KubeConfig)
 	conf.Resource = controller.Resource{
 		Pod:                   true,
-		Node:                  true,
-		PersistentVolume:      true,
-		PersistentVolumeClaim: true,
-		ReplicaSet:            true,
-		Deployment:            true,
-		StatefulSet:           true,
-		DaemonSet:             true,
-		Job:                   true,
-		Service:               true,
-		Namespace:             true,
+		Node:                  false,
+		PersistentVolume:      false,
+		PersistentVolumeClaim: false,
+		ReplicaSet:            false,
+		Deployment:            false,
+		StatefulSet:           false,
+		DaemonSet:             false,
+		Job:                   false,
+		Service:               false,
+		Namespace:             false,
 	}
 	conf.RingBuffer = &buffering.RingBuffer{Size: buffering.BufferSize, Mutex: &sync.Mutex{}}
 	clientset, clusterConfig := client.GetAPIExtensionClient(*kubeconfig)

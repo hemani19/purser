@@ -64,5 +64,5 @@ func startCronJobs() {
 
 func runDiscovery() {
 	processor.ProcessPodInteractions(conf)
-	processor.ProcessServiceInteractions(conf)
+	//processor.ProcessServiceInteractions(conf)
 }

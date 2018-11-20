@@ -37,6 +37,9 @@ func GetHomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetPodInteractions listens on /interactions/pod endpoint and returns pod interactions
+// /interactions/pod will give all pod data
+// /interactions/pod?orphan=false will give only data for pods having outbound edges
+// /interactions/pod?name=<pod-name> will give data only for the pod with pod-name
 func GetPodInteractions(w http.ResponseWriter, r *http.Request) {
 	addHeaders(&w, r)
 	queryParams := r.URL.Query()

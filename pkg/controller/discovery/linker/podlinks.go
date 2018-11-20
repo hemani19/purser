@@ -78,16 +78,16 @@ func GenerateAndStorePodInteractions() {
 
 // PopulateMappingTables updates PodToPodTable
 func PopulateMappingTables(tcpDump []string, pod corev1.Pod, process Process, containerName string, interactions *InteractionsWrapper) {
-	podXID := pod.Namespace + KeySpliter + pod.Name
-	containerXID := podXID + KeySpliter + containerName
-	procXID := containerXID + KeySpliter + process.ID + KeySpliter + process.Name
-	populateContainerProcessTable(containerXID, procXID, interactions)
+	//podXID := pod.Namespace + KeySpliter + pod.Name
+	//containerXID := podXID + KeySpliter + containerName
+	//procXID := containerXID + KeySpliter + process.ID + KeySpliter + process.Name
+	//populateContainerProcessTable(containerXID, procXID, interactions)
 	for _, address := range tcpDump {
 		address := strings.Split(address, KeySpliter)
 		srcIP, dstIP := address[0], address[2]
 		srcName, dstName := podIPTable[srcIP], podIPTable[dstIP]
 		updatePodInteractions(srcName, dstName, interactions)
-		updatePodProcessInteractions(procXID, dstName, interactions)
+		//updatePodProcessInteractions(procXID, dstName, interactions)
 	}
 }
 

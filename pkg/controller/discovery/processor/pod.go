@@ -58,8 +58,8 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 				containers := pod.Spec.Containers
 				interactions := processContainerDetails(conf, pod, containers)
 				linker.UpdatePodToPodTable(interactions.PodInteractions)
-				linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
-					pod.GetCreationTimestamp().Time)
+				//linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
+				//	pod.GetCreationTimestamp().Time)
 				log.Debugf("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
 			}(pod, index)
 		}

@@ -25,10 +25,10 @@ import (
 	"github.com/vmware/purser/pkg/controller/dgraph/models"
 
 	log "github.com/Sirupsen/logrus"
-	apps_v1beta1 "k8s.io/api/apps/v1beta1"
-	batch_v1 "k8s.io/api/batch/v1"
+	//apps_v1beta1 "k8s.io/api/apps/v1beta1"
+	//batch_v1 "k8s.io/api/batch/v1"
 	api_v1 "k8s.io/api/core/v1"
-	ext_v1beta1 "k8s.io/api/extensions/v1beta1"
+	//ext_v1beta1 "k8s.io/api/extensions/v1beta1"
 )
 
 // ProcessEvents processes the event and notifies the subscribers.
@@ -40,8 +40,8 @@ func ProcessEvents(conf *controller.Config) {
 		for {
 			// TODO: listen for subscriber and group crd updates and update
 			// in memory copy instead of querying everytime.
-			subscribers := getSubscribers(conf)
-			groups := getAllGroups(conf.Groupcrdclient)
+			//subscribers := getSubscribers(conf)
+			//groups := getAllGroups(conf.Groupcrdclient)
 
 			data, size := conf.RingBuffer.ReadN(ReadSize)
 
@@ -54,10 +54,10 @@ func ProcessEvents(conf *controller.Config) {
 			PersistPayloads(data)
 
 			// Post data to subscribers.
-			notifySubscribers(data, subscribers)
+			//notifySubscribers(data, subscribers)
 
 			// Update user created groups.
-			updateCustomGroups(data, groups, conf.Groupcrdclient)
+			//updateCustomGroups(data, groups, conf.Groupcrdclient)
 
 			conf.RingBuffer.RemoveN(size)
 			conf.RingBuffer.PrintDetails()
@@ -81,106 +81,106 @@ func PersistPayloads(payloads []*interface{}) {
 			if err != nil {
 				log.Errorf("Error while persisting pod %v", err)
 			}
-		} else if payload.ResourceType == "Service" {
-			service := api_v1.Service{}
-			err := json.Unmarshal([]byte(payload.Data), &service)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			err = models.StoreService(service)
-			if err != nil {
-				log.Errorf("Error while persisting service %v", err)
-			}
-		} else if payload.ResourceType == "Node" {
-			node := api_v1.Node{}
-			err := json.Unmarshal([]byte(payload.Data), &node)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreNode(node)
-			if err != nil {
-				log.Errorf("Error while persisting node %v", err)
-			}
-		} else if payload.ResourceType == "Namespace" {
-			ns := api_v1.Namespace{}
-			err := json.Unmarshal([]byte(payload.Data), &ns)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreNamespace(ns)
-			if err != nil {
-				log.Errorf("Error while persisting namespace %v", err)
-			}
-		} else if payload.ResourceType == "Deployment" {
-			deployment := apps_v1beta1.Deployment{}
-			err := json.Unmarshal([]byte(payload.Data), &deployment)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreDeployment(deployment)
-			if err != nil {
-				log.Errorf("Error while persisting deployment %v", err)
-			}
-		} else if payload.ResourceType == "ReplicaSet" {
-			replicaset := ext_v1beta1.ReplicaSet{}
-			err := json.Unmarshal([]byte(payload.Data), &replicaset)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreReplicaset(replicaset)
-			if err != nil {
-				log.Errorf("Error while persisting replicaset %v", err)
-			}
-		} else if payload.ResourceType == "StatefulSet" {
-			statefulset := apps_v1beta1.StatefulSet{}
-			err := json.Unmarshal([]byte(payload.Data), &statefulset)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreStatefulset(statefulset)
-			if err != nil {
-				log.Errorf("Error while persisting statefulset %v", err)
-			}
-		} else if payload.ResourceType == "PersistentVolume" {
-			pv := api_v1.PersistentVolume{}
-			err := json.Unmarshal([]byte(payload.Data), &pv)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StorePersistentVolume(pv)
-			if err != nil {
-				log.Errorf("Error while persisting persistent volume %v", err)
-			}
-		} else if payload.ResourceType == "PersistentVolumeClaim" {
-			pvc := api_v1.PersistentVolumeClaim{}
-			err := json.Unmarshal([]byte(payload.Data), &pvc)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StorePersistentVolumeClaim(pvc)
-			if err != nil {
-				log.Errorf("Error while persisting persistent volume claim %v", err)
-			}
-		} else if payload.ResourceType == "DaemonSet" {
-			daemonset := ext_v1beta1.DaemonSet{}
-			err := json.Unmarshal([]byte(payload.Data), &daemonset)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreDaemonset(daemonset)
-			if err != nil {
-				log.Errorf("Error while persisting daemonset %v", err)
-			}
-		} else if payload.ResourceType == "Job" {
-			job := batch_v1.Job{}
-			err := json.Unmarshal([]byte(payload.Data), &job)
-			if err != nil {
-				log.Errorf("Error un marshalling payload " + payload.Data)
-			}
-			_, err = models.StoreJob(job)
-			if err != nil {
-				log.Errorf("Error while persisting job %v", err)
-			}
+			//} else if payload.ResourceType == "Service" {
+			//	service := api_v1.Service{}
+			//	err := json.Unmarshal([]byte(payload.Data), &service)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	err = models.StoreService(service)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting service %v", err)
+			//	}
+			//} else if payload.ResourceType == "Node" {
+			//	node := api_v1.Node{}
+			//	err := json.Unmarshal([]byte(payload.Data), &node)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreNode(node)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting node %v", err)
+			//	}
+			//} else if payload.ResourceType == "Namespace" {
+			//	ns := api_v1.Namespace{}
+			//	err := json.Unmarshal([]byte(payload.Data), &ns)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreNamespace(ns)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting namespace %v", err)
+			//	}
+			//} else if payload.ResourceType == "Deployment" {
+			//	deployment := apps_v1beta1.Deployment{}
+			//	err := json.Unmarshal([]byte(payload.Data), &deployment)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreDeployment(deployment)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting deployment %v", err)
+			//	}
+			//} else if payload.ResourceType == "ReplicaSet" {
+			//	replicaset := ext_v1beta1.ReplicaSet{}
+			//	err := json.Unmarshal([]byte(payload.Data), &replicaset)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreReplicaset(replicaset)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting replicaset %v", err)
+			//	}
+			//} else if payload.ResourceType == "StatefulSet" {
+			//	statefulset := apps_v1beta1.StatefulSet{}
+			//	err := json.Unmarshal([]byte(payload.Data), &statefulset)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreStatefulset(statefulset)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting statefulset %v", err)
+			//	}
+			//} else if payload.ResourceType == "PersistentVolume" {
+			//	pv := api_v1.PersistentVolume{}
+			//	err := json.Unmarshal([]byte(payload.Data), &pv)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StorePersistentVolume(pv)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting persistent volume %v", err)
+			//	}
+			//} else if payload.ResourceType == "PersistentVolumeClaim" {
+			//	pvc := api_v1.PersistentVolumeClaim{}
+			//	err := json.Unmarshal([]byte(payload.Data), &pvc)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StorePersistentVolumeClaim(pvc)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting persistent volume claim %v", err)
+			//	}
+			//} else if payload.ResourceType == "DaemonSet" {
+			//	daemonset := ext_v1beta1.DaemonSet{}
+			//	err := json.Unmarshal([]byte(payload.Data), &daemonset)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreDaemonset(daemonset)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting daemonset %v", err)
+			//	}
+			//} else if payload.ResourceType == "Job" {
+			//	job := batch_v1.Job{}
+			//	err := json.Unmarshal([]byte(payload.Data), &job)
+			//	if err != nil {
+			//		log.Errorf("Error un marshalling payload " + payload.Data)
+			//	}
+			//	_, err = models.StoreJob(job)
+			//	if err != nil {
+			//		log.Errorf("Error while persisting job %v", err)
+			//	}
 		}
 	}
 }
