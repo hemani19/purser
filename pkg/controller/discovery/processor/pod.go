@@ -47,7 +47,11 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 	podsCount := len(pods.Items)
 	log.Infof("Processing total of (%d) Pods.", podsCount)
 
-	wg.Add(podsCount)
+	maxParallelGoRoutinesCount := 10
+	if podsCount < 10 {
+		maxParallelGoRoutinesCount = podsCount
+	}
+	wg.Add(maxParallelGoRoutinesCount)
 	{
 		for index, pod := range pods.Items {
 			log.Debugf("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
