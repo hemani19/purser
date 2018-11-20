@@ -117,16 +117,16 @@ func StorePod(k8sPod api_v1.Pod) error {
 		return err
 		//deleteContainersInTerminatedPod(pod.Containers, podDeletedTimestamp.Time)
 	} //else {
-		//namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
-		//containers, metrics := StoreAndRetrieveContainersAndMetrics(k8sPod, uid, namespaceUID)
-		//pod = Pod{
-		//	ID:            dgraph.ID{Xid: xid, UID: uid},
-		//	Containers:    containers,
-		//	CPURequest:    metrics.CPURequest,
-		//	CPULimit:      metrics.CPULimit,
-		//	MemoryRequest: metrics.MemoryRequest,
-		//	MemoryLimit:   metrics.MemoryLimit,
-		//}
+	//namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
+	//containers, metrics := StoreAndRetrieveContainersAndMetrics(k8sPod, uid, namespaceUID)
+	//pod = Pod{
+	//	ID:            dgraph.ID{Xid: xid, UID: uid},
+	//	Containers:    containers,
+	//	CPURequest:    metrics.CPURequest,
+	//	CPULimit:      metrics.CPULimit,
+	//	MemoryRequest: metrics.MemoryRequest,
+	//	MemoryLimit:   metrics.MemoryLimit,
+	//}
 	//}
 	return nil
 }

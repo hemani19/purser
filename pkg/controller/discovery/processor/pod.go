@@ -59,11 +59,11 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 	wg.Add(podsCount)
 	for index, pod := range pods.Items {
 		log.Debugf("Processing Pod: (%s), (%d/%d) ... ", pod.Name, index+1, podsCount)
-		if freeThreads < 1 {  
+		if freeThreads < 1 {
 			numChannelsRecieved++
-			<- ch
+			<-ch
 		}
-		
+
 		freeThreads--
 		go func(pod corev1.Pod, index int) {
 			containers := pod.Spec.Containers
@@ -72,16 +72,17 @@ func processPodDetails(conf controller.Config, pods *corev1.PodList) {
 			//linker.StoreProcessInteractions(interactions.ContainerProcessInteraction, interactions.ProcessToPodInteraction,
 			//	pod.GetCreationTimestamp().Time)
 			doneCount++
-			if doneCount % 10 == 1 {
-				log.Infof("Finished processing (%d/%d) pods", doneCount podsCount)
+			if doneCount%10 == 1 {
+				log.Infof("Finished processing (%d/%d) pods", doneCount, podsCount)
+			}
 			log.Debugf("Finished processing Pod: (%s), (%d/%d)", pod.Name, index+1, podsCount)
 			freeThreads++
 			ch <- 1
 			wg.Done()
 		}(pod, index)
 	}
-	for i := 0; i < podsCount - numChannelsRecieved; i++ {
-		<- ch
+	for i := 0; i < podsCount-numChannelsRecieved; i++ {
+		<-ch
 	}
 	wg.Wait()
 	close(ch)
