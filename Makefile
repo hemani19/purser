@@ -25,7 +25,7 @@ CMD := cmd/controller
 
 # Where to push the docker image.
 REGISTRY?=docker.io
-DOCKER_REPO?=vmwareh
+DOCKER_REPO?=kreddyj
 
 # Which architecture to build - see $(ALL_ARCH) for options.
 ARCH ?= amd64
@@ -34,7 +34,7 @@ ARCH ?= amd64
 #VERSION := $(shell git describe --tags --always --dirty)
 #
 # This version-strategy uses a manual value to set the version string
-VERSION := 1.0.0
+VERSION := 2.0.0
 
 ###
 ### These variables should not need tweaking.
