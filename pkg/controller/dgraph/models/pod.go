@@ -113,8 +113,10 @@ func StorePod(k8sPod api_v1.Pod) error {
 			ID:      dgraph.ID{Xid: xid, UID: uid},
 			EndTime: podDeletedTimestamp.Time.Format(time.RFC3339),
 		}
+		_, err := dgraph.MutateNode(pod, dgraph.UPDATE)
+		return err
 		//deleteContainersInTerminatedPod(pod.Containers, podDeletedTimestamp.Time)
-	} else {
+	} //else {
 		//namespaceUID := CreateOrGetNamespaceByID(k8sPod.Namespace)
 		//containers, metrics := StoreAndRetrieveContainersAndMetrics(k8sPod, uid, namespaceUID)
 		//pod = Pod{
@@ -125,10 +127,8 @@ func StorePod(k8sPod api_v1.Pod) error {
 		//	MemoryRequest: metrics.MemoryRequest,
 		//	MemoryLimit:   metrics.MemoryLimit,
 		//}
-	}
-
-	_, err := dgraph.MutateNode(pod, dgraph.UPDATE)
-	return err
+	//}
+	return nil
 }
 
 // StorePodsInteraction store the pod interactions in Dgraph
