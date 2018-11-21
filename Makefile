@@ -25,13 +25,13 @@ CMD := cmd/controller
 
 # Where to push the docker image.
 REGISTRY?=docker.io
-DOCKER_REPO?=kreedyj
+DOCKER_REPO?=kreddyj
 
 # Which architecture to build - see $(ALL_ARCH) for options.
 ARCH?= amd64
 
 # This version-strategy uses a manual value to set the version string
-VERSION := 2.1.0-interactions-stable
+VERSION := 2.0.0-interactions-photon-stable
 
 ###
 ### These variables should not need tweaking.
